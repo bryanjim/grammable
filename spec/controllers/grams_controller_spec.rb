@@ -1,6 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe GramsController, type: :controller do
+  describe "grams#show action" do
+  
+  it "should succesfully show the page if the gram is found" do
+    gram = FactoryBot.create(:gram)
+    get :show, params: { id: gram.id }
+    expect(response).to have_http_status(:success)
+  end
+
+  it "should return a 404 error if the gram is not found" do
+    get :show, params: { id: 'TACOCAT' }
+    expect(response).to have_http_status(:not_found)
+  end
+end
+
+
+
   describe "grams#index action" do
     it "should succesfully show the page" do
       get :index
@@ -15,11 +31,7 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to redirect_to new_user_session_path
     end
     it "should succesfully show the new form" do
-      user = User.create(
-        email:                 'fakeuser@gmail.com',
-        password:              'secretPassword',
-        password_confirmation: 'secretPassword'
-      )
+      user = FactoryBot.create(:user)
       sign_in user
 
       get :new
@@ -29,11 +41,7 @@ RSpec.describe GramsController, type: :controller do
 
   describe "grams#create action" do
     it "should succesfully create a new gram in our database" do
-      user = User.create(
-        email:                 'fakeuser@gmail.com',
-        password:              'secretPassword',
-        password_confirmation: 'secretPassword'
-      )
+      user = FactoryBot.create(:user)
       sign_in user
 
       post :create, params: { gram: { message: 'Hello!'} }
@@ -44,18 +52,13 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should properly deal with validation errors" do
-      user = User.create(
-        email:                 'fakeuser@gmail.com',
-        password:              'secretPassword',
-        password_confirmation: 'secretPassword'
-      )
+      user = FactoryBot.create(:user)
       sign_in user
 
       post :create, params: {gram: { message: ''} }
       expect(response).to have_http_status(:unprocessable_entity)
       expect(Gram.count).to eq Gram.count
     end
-
   end
 
 
