@@ -42,7 +42,7 @@ RSpec.describe GramsController, type: :controller do
       patch :update, params: { id: gram.id, gram: { message: 'wahoo'} }
       expect(response).to have_http_status(:forbidden)
     end
-    
+
     it "shouldn't let unathenticated users update a gram" do
       gram = FactoryBot.create(:gram)
       patch :update, params: { id: gram.id, gram: { message: "Hello"} }
@@ -89,7 +89,7 @@ RSpec.describe GramsController, type: :controller do
       get :edit, params: { id: gram.id }
       expect(response).to have_http_status(:forbidden)
     end
-    
+
     it "shouldn't let unathenticated users edit a gram" do
       gram = FactoryBot.create(:gram)
       get :edit, params: { id: gram.id }
@@ -116,7 +116,7 @@ RSpec.describe GramsController, type: :controller do
 
 
   describe "grams#show action" do
-  
+
   it "should succesfully show the page if the gram is found" do
     gram = FactoryBot.create(:gram)
     get :show, params: { id: gram.id }
@@ -140,7 +140,7 @@ end
 
 
   describe "grams#new action"do
-    it "should require useers to be logged in" do
+    it "should require users to be logged in" do
       post :create, params: { gram: { message: "Hello" } }
       expect(response).to redirect_to new_user_session_path
     end
@@ -154,7 +154,7 @@ end
   end
 
   describe "grams#create action" do
-    
+
     it "should require users to be logged in" do
       post :create, params: { gram: { message: "Hello" } }
       expect(response).to redirect_to new_user_session_path
@@ -164,7 +164,12 @@ end
       user = FactoryBot.create(:user)
       sign_in user
 
-      post :create, params: { gram: { message: 'Hello!'} }
+      post :create, params: {
+        gram: {
+          message: 'Hello!',
+          picture: fixture_file_upload("/picture.png",'image/png')
+          }
+        }
       expect(response).to redirect_to root_path
 
       gram = Gram.last

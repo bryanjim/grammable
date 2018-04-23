@@ -1,13 +1,13 @@
 class GramsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
-  
+
   def destroy
     @gram = Gram.find_by_id(params[:id])
     return render_not_found if @gram.blank?
     return render_not_found(:forbidden) if @gram.user != current_user
     @gram.destroy
     redirect_to root_path
-  
+
   end
 
   def show
